@@ -1,0 +1,40 @@
+# Easy-RSA 3 parameter settings
+
+if [ -z "$EASYRSA_CALLER" ]; then
+        echo "You appear to be sourcing an Easy-RSA 'vars' file." >&2
+        echo "This is no longer necessary and is disallowed. See the section called" >&2
+        echo "'How to use this file' near the top comments for more details." >&2
+        return 1
+fi
+
+# Organizational fields
+set_var EASYRSA_REQ_COUNTRY    "US"
+set_var EASYRSA_REQ_PROVINCE   "California"
+set_var EASYRSA_REQ_CITY       "San Francisco"
+set_var EASYRSA_REQ_ORG        "Copyleft Certificate Co"
+set_var EASYRSA_REQ_EMAIL      "me@example.net"
+set_var EASYRSA_REQ_OU         "My Organizational Unit"
+
+# Default CN
+set_var EASYRSA_REQ_CN         "MyServer"
+
+# Choose a size in bits for your keypairs.
+set_var EASYRSA_KEY_SIZE       2048
+
+# crypto mode. rsa, ec, ed.
+set_var EASYRSA_ALGO           rsa
+
+# Cryptographic digest to use. include: md5, sha1, sha256, sha224, sha384, sha512
+set_var EASYRSA_DIGEST         "sha256"
+
+# In how many days should the root CA key expire?
+set_var EASYRSA_CA_EXPIRE      3650
+
+# In how many days should certificates expire?
+set_var EASYRSA_CERT_EXPIRE    825
+
+# How many days until the next CRL publish date?
+set_var EASYRSA_CRL_DAYS       1800
+
+# How many days before its expiration date a certificate is allowed to be renewed?
+set_var EASYRSA_CERT_RENEW     30

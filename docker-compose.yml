@@ -1,0 +1,16 @@
+version: '3.6'
+
+services:
+  easy-certificate-creator:
+    container_name: easy-certificate-creator
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - "SERVER_HOST=example.co.jp"
+    tty: true
+    stdin_open: true
+    volumes:
+      - type: bind
+        source: ./easyrsa
+        target: /opt/easyrsa
