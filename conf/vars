@@ -8,11 +8,11 @@ if [ -z "$EASYRSA_CALLER" ]; then
 fi
 
 # Organizational fields
-set_var EASYRSA_REQ_COUNTRY    "US"
-set_var EASYRSA_REQ_PROVINCE   "California"
-set_var EASYRSA_REQ_CITY       "San Francisco"
-set_var EASYRSA_REQ_ORG        "Copyleft Certificate Co"
-set_var EASYRSA_REQ_EMAIL      "me@example.net"
+set_var EASYRSA_REQ_COUNTRY    "JP"
+set_var EASYRSA_REQ_PROVINCE   "TOKYO"
+set_var EASYRSA_REQ_CITY       "SHINJUKU"
+set_var EASYRSA_REQ_ORG        "NISHISHINJUKU"
+set_var EASYRSA_REQ_EMAIL      "me@localhost.com"
 set_var EASYRSA_REQ_OU         "My Organizational Unit"
 
 # Default CN

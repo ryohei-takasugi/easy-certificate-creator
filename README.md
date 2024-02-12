@@ -46,29 +46,87 @@ set_var EASYRSA_CERT_RENEW     30
 
 ## 生成（コンテナの実行）
 ```
-$ docker compose up -d                                    
-[+] Building 0.7s (12/12) FINISHED                                                                                                                     docker:desktop-linux
- => [easy-certificate-creator internal] load .dockerignore                                                                                                             0.0s
- => => transferring context: 2B                                                                                                                                        0.0s
- => [easy-certificate-creator internal] load build definition from Dockerfile                                                                                          0.0s
- => => transferring dockerfile: 668B                                                                                                                                   0.0s
- => [easy-certificate-creator internal] load metadata for docker.io/library/debian:bullseye-slim                                                                       0.6s
- => [easy-certificate-creator 1/7] FROM docker.io/library/debian:bullseye-slim@sha256:41c3fecb70015fd9c72d6df95573de3f92d5f4f46fdabe8dbd8d2bfb1531594d                 0.0s
- => [easy-certificate-creator internal] load build context                                                                                                             0.0s
- => => transferring context: 88B                                                                                                                                       0.0s
- => CACHED [easy-certificate-creator 2/7] RUN apt update && apt install -y openssl easy-rsa && apt clean                                                               0.0s
- => CACHED [easy-certificate-creator 3/7] RUN mkdir -p /opt/easyrsa                                                                                                    0.0s
- => CACHED [easy-certificate-creator 4/7] WORKDIR /opt/easyrsa                                                                                                         0.0s
- => CACHED [easy-certificate-creator 5/7] COPY ./conf/vars /vars                                                                                                       0.0s
- => CACHED [easy-certificate-creator 6/7] COPY ./entrypoint.sh /entrypoint.sh                                                                                          0.0s
- => CACHED [easy-certificate-creator 7/7] RUN chmod 755 /entrypoint.sh                                                                                                 0.0s
- => [easy-certificate-creator] exporting to image                                                                                                                      0.0s
- => => exporting layers                                                                                                                                                0.0s
- => => writing image sha256:65ab9680dbab5ec93fd5d1d7fc8f7377ac260b90111c1014713b9d04d0ad62b3                                                                           0.0s
- => => naming to docker.io/library/easy-certificate-creator-easy-certificate-creator                                                                                   0.0s
-[+] Running 2/2
- ✔ Network easy-certificate-creator_default  Created                                                                                                                   0.0s 
- ✔ Container easy-certificate-creator        Started 
+$ docker compose run --rm easy-certificate-creator                                 
+Note: using Easy-RSA configuration from: /opt/easyrsa/vars
+
+init-pki complete; you may now create a CA or requests.
+Your newly created PKI dir is: /opt/easyrsa/pki
+
+
+
+Note: using Easy-RSA configuration from: /opt/easyrsa/vars
+Using SSL: openssl OpenSSL 1.1.1w  11 Sep 2023
+Generating RSA private key, 2048 bit long modulus (2 primes)
+..................................+++++
+.................................+++++
+e is 65537 (0x010001)
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Common Name (eg: your user, host, or server name) [Easy-RSA CA]:
+CA creation complete and you may now import and sign cert requests.
+Your new CA certificate file for publishing is at:
+/opt/easyrsa/pki/ca.crt
+
+
+
+Note: using Easy-RSA configuration from: /opt/easyrsa/vars
+Using SSL: openssl OpenSSL 1.1.1w  11 Sep 2023
+Generating DH parameters, 2048 bit long safe prime, generator 2
+This is going to take a long time
+................+.....................................................................................................................................................................................................................................................................................................................................+.........................+......................................................................................................................................................+..............................+...................+...........................................................................................................................+............................+..............................................................................................................+......................................................................................................................................................................................................................................................+.................................+...........................................................................................................................+...................................................................................................................................................................................................+.............................................................+........................................................................................................................................................................................................................................................................................................................................................+...........................................................................................................................................................................................+....................................................+.................................................................................+............................+........+....................................+...................................................................................................................................................+............................................................................................................................................................................................................................................................................................................................................................................................................+.....................................................+...................................................+...................................................................................................................................................................................................................................................................................................+................................+..............+.....................................................................................................+..+....................................+....................+....................+............................................................................................................................................................+........................................................................................................................................................................................................................................+............................................................................................................................................+...............................................................................................................................................................................+....................................................................................................................................................................................................................................................................................................................................................................+..................................................................................................................................................................................................................................................................................................................................................................................................................................................+..............+......................................................................+...................................+.................................................................................................................................++*++*++*++*
+
+DH parameters of size 2048 created at /opt/easyrsa/pki/dh.pem
+
+
+
+Note: using Easy-RSA configuration from: /opt/easyrsa/vars
+Using SSL: openssl OpenSSL 1.1.1w  11 Sep 2023
+Generating a RSA private key
+......................+++++
+.......................................+++++
+writing new private key to '/opt/easyrsa/pki/easy-rsa-72.JmnnvA/tmp.u6OuKP'
+-----
+Using configuration from /opt/easyrsa/pki/easy-rsa-72.JmnnvA/tmp.SMgQIM
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+commonName            :ASN.1 12:'server'
+Certificate is to be certified until May  4 13:31:51 2026 GMT (825 days)
+
+Write out database with 1 new entries
+Data Base Updated
+
+
+Note: using Easy-RSA configuration from: /opt/easyrsa/vars
+Using SSL: openssl OpenSSL 1.1.1w  11 Sep 2023
+Using configuration from /opt/easyrsa/pki/easy-rsa-148.P3GucM/tmp.oWgpLz
+
+An updated CRL has been created.
+CRL file: /opt/easyrsa/pki/crl.pem
+
+
+
+Note: using Easy-RSA configuration from: /opt/easyrsa/vars
+Using SSL: openssl OpenSSL 1.1.1w  11 Sep 2023
+Generating a RSA private key
+...........................+++++
+..+++++
+writing new private key to '/opt/easyrsa/pki/easy-rsa-167.TRzlhT/tmp.b1aG09'
+-----
+Using configuration from /opt/easyrsa/pki/easy-rsa-167.TRzlhT/tmp.RcPPjP
+Check that the request matches the signature
+Signature ok
+The Subject's Distinguished Name is as follows
+commonName            :ASN.1 12:'client01'
+Certificate is to be certified until May  4 13:31:52 2026 GMT (825 days)
+
+Write out database with 1 new entries
+Data Base Updated
 ```
 
 ## 生成結果
