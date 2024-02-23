@@ -1,6 +1,8 @@
 # 証明書の生成方法
 
-## ./conf/vars の編集
+## easyrsa (未完成)
+
+### ./conf/vars の編集
 ``` init
 # Easy-RSA 3 parameter settings
 
@@ -44,7 +46,7 @@ set_var EASYRSA_CRL_DAYS       1800
 set_var EASYRSA_CERT_RENEW     30
 ```
 
-## 生成（コンテナの実行）
+### 生成（コンテナの実行）
 ```
 $ docker compose run --rm easy-certificate-creator                                 
 Note: using Easy-RSA configuration from: /opt/easyrsa/vars
@@ -129,7 +131,7 @@ Write out database with 1 new entries
 Data Base Updated
 ```
 
-## 生成結果
+### 生成結果
 ``` bash
 $ tree easyrsa/pki 
 easyrsa/pki
@@ -169,13 +171,13 @@ easyrsa/pki
 13 directories, 20 files
 ```
 
-# nginx cretificate file copy
+### nginx cretificate file copy
 ``` bash
 cp easyrsa/pki/private/server.key /etc/nginx/ssl/server.key
 cp easyrsa/pki/issued/server.crt /etc/nginx/ssl/server.crt
 ```
 
-# nginx.conf の編集
+### nginx.conf の編集
 ```
 server {
   listen 80;
@@ -196,3 +198,74 @@ server {
   }
 }
 ```
+
+
+## Openssl（動作確認済み）
+
+### 生成（コンテナの実行）
+`openssl`フォルダに証明書を生成する
+```
+$ docker compose run --rm easy-certificate-creator  
+（省略）
+```
+
+### nginx cretificate file copy
+`nginx`配下に証明書を移動
+``` bash
+cp openssl/server.key /etc/nginx/ssl/server.key
+cp openssl/server.crt /etc/nginx/ssl/server.crt
+```
+
+### nginx.conf の編集
+`nginx`に証明書を設定
+```
+server {
+  listen 80;
+  server_name localhost.my.domain.com;
+  return 301 https://$host$request_uri;
+}
+
+server {
+  listen 443;
+  server_name localhost.my.domain.com;
+
+  ssl                  on;
+  ssl_certificate      /etc/nginx/ssl/server.crt;
+  ssl_certificate_key  /etc/nginx/ssl/server.key;
+
+  location / {
+    proxy_pass http://localhost:3000;
+  }
+}
+```
+
+### edit hosts
+add `localhost.my.domain.com`
+```
+$ vi /etc/hosts                           
+##
+# Host Database
+#
+# localhost is used to configure the loopback interface
+# when the system is booting.  Do not change this entry.
+##
+127.0.0.1       localhost
+255.255.255.255 broadcasthost
+::1             localhost
+# Added by Docker Desktop
+# To allow the same kube context to work on the host and the container:
+127.0.0.1 kubernetes.docker.internal
+
+127.0.0.1 localhost.my.domain.com
+
+# End of section
+```
+
+### ルート証明書の登録
+OSによるので各自調べてください
+また必要に応じて「常に信頼」にしてください。
+
+
+### Webブラウザの再起動
+完全にすべてのタブを閉じてWebブラウザを停止してください。
+そのうえで立ち上げ直して、「https://localhost.my.domain.com」にアクセスします。
