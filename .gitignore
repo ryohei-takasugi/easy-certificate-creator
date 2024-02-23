@@ -1,2 +1,6 @@
 easyrsa/*
 .DS_Store
+openssl/*
+
+
+!.gitkeep

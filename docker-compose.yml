@@ -11,6 +11,5 @@ services:
     tty: true
     stdin_open: true
     volumes:
-      - type: bind
-        source: ./easyrsa
-        target: /opt/easyrsa
+      - ./easyrsa:/opt/easyrsa
+      - ./openssl:/opt/openssl
