@@ -1,14 +1,15 @@
 #!/bin/bash
 
-cd /opt/easyrsa
-rm -rf ./*
-cp -r /usr/share/easy-rsa/* .
-
 # 環境変数の設定
 export CERT_DIR="/opt/openssl" # 証明書を保存するディレクトリ
 export DOMAIN="my.domain.com" # 実際のドメイン名に置き換えてください
 export DAYS=365 # 証明書の有効期限（日数）
 export PASSWORD="yourpassword"
+export DN_COUNTRY_NAME="JP"
+export DN_STATE_OR_PROVINCE_NAME="Tokyo"
+export DN_CITY="Shibuyaku"
+export DN_COMPANY="company"
+export DEBUG="true"
 
 # ディレクトリの作成
 rm -rf "$CERT_DIR"/*
@@ -25,10 +26,10 @@ req_extensions = req_ext
 distinguished_name = dn
 
 [ dn ]
-C=US
-ST=YourState
-L=YourCity
-O=YourOrganization
+C=$DN_COUNTRY_NAME
+ST=$DN_STATE_OR_PROVINCE_NAME
+L=$DN_CITY
+O=$DN_COMPANY
 CN=$DOMAIN
 
 [ req_ext ]
@@ -72,7 +73,15 @@ openssl x509 -req -in server.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateseria
 openssl pkcs12 -export -out server.p12 -inkey server.key -in server.crt -certfile rootCA.pem -passout pass:$PASSWORD
 
 # 証明書と鍵の場所の出力
-echo "ルートCA証明書: $CERT_DIR/rootCA.pem"
-echo "サーバー証明書: $CERT_DIR/server.crt"
-echo "サーバー秘密鍵: $CERT_DIR/server.key"
-echo ".p12ファイル: $CERT_DIR/server.p12"
+echo "-----------------------------"
+echo "file path"
+echo "  ルートCA証明書: $CERT_DIR/rootCA.pem"
+echo "  サーバー証明書: $CERT_DIR/server.crt"
+echo "  サーバー秘密鍵: $CERT_DIR/server.key"
+echo "  .p12ファイル: $CERT_DIR/server.p12"
+
+if [ "$DEBUG" = "true" ]
+then
+    echo "-----------------------------"
+    openssl x509 -text -noout -in "$CERT_DIR/server.crt"
+fi
