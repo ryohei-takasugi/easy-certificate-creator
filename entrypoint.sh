@@ -3,25 +3,12 @@
 cd /opt/easyrsa
 rm -rf ./*
 cp -r /usr/share/easy-rsa/* .
-# export PATH="/opt/easyrsa:$PATH"
-
-cp /vars ./vars
-
-easyrsa init-pki
-echo "*.${SERVER_HOST}" | easyrsa build-ca nopass
-easyrsa gen-dh nopass
-easyrsa build-server-full server nopass
-easyrsa gen-crl
-
-easyrsa build-client-full client01 nopass
-
-
-
 
 # 環境変数の設定
 export CERT_DIR="/opt/openssl" # 証明書を保存するディレクトリ
 export DOMAIN="my.domain.com" # 実際のドメイン名に置き換えてください
 export DAYS=365 # 証明書の有効期限（日数）
+export PASSWORD="yourpassword"
 
 # ディレクトリの作成
 rm -rf "$CERT_DIR"/*
@@ -81,7 +68,11 @@ EOF
 # サーバー証明書の生成（ルートCAによる署名）、SANを含む
 openssl x509 -req -in server.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out server.crt -days "$DAYS" -sha256 -extfile v3.ext
 
+# .p12ファイルの生成
+openssl pkcs12 -export -out server.p12 -inkey server.key -in server.crt -certfile rootCA.pem -passout pass:$PASSWORD
+
 # 証明書と鍵の場所の出力
 echo "ルートCA証明書: $CERT_DIR/rootCA.pem"
 echo "サーバー証明書: $CERT_DIR/server.crt"
 echo "サーバー秘密鍵: $CERT_DIR/server.key"
+echo ".p12ファイル: $CERT_DIR/server.p12"

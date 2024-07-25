@@ -11,5 +11,4 @@ services:
     tty: true
     stdin_open: true
     volumes:
-      - ./easyrsa:/opt/easyrsa
       - ./openssl:/opt/openssl
