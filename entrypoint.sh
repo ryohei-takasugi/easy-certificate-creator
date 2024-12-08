@@ -2,7 +2,7 @@
 
 # 環境変数の設定
 export CERT_DIR="/opt/openssl" # 証明書を保存するディレクトリ
-export DOMAIN="my.domain.com" # 実際のドメイン名に置き換えてください
+export DOMAIN_LIST="localhost.my.domain.com my.domain.com www.my.domain.com" # 実際のドメイン名に置き換えてください
 export DAYS=365 # 証明書の有効期限（日数）
 export PASSWORD="yourpassword"
 export DN_COUNTRY_NAME="JP"
@@ -11,10 +11,20 @@ export DN_CITY="Shibuyaku"
 export DN_COMPANY="company"
 export DEBUG="true"
 
+DOMAIN_ARRAY=($DOMAIN_LIST)
+
 # ディレクトリの作成
 rm -rf "$CERT_DIR"/*
 mkdir -p "$CERT_DIR"
 cd "$CERT_DIR"
+
+# SANの設定を動的に生成
+ALT_NAMES=""
+for DOMAIN in "${DOMAIN_ARRAY[@]}"; do
+  ALT_NAMES="${ALT_NAMES}DNS:${DOMAIN}, "
+done
+ALT_NAMES="${ALT_NAMES%, }"
+echo $ALT_NAMES
 
 # 設定ファイルの生成
 cat > server.csr.cnf <<EOF
@@ -30,15 +40,10 @@ C=$DN_COUNTRY_NAME
 ST=$DN_STATE_OR_PROVINCE_NAME
 L=$DN_CITY
 O=$DN_COMPANY
-CN=$DOMAIN
+CN=${DOMAIN_ARRAY[0]}
 
 [ req_ext ]
-subjectAltName = @alt_names
-
-[ alt_names ]
-DNS.1 = localhost.$DOMAIN
-DNS.2 = $DOMAIN
-DNS.3 = www.$DOMAIN
+subjectAltName = ${ALT_NAMES}
 EOF
 
 # ルートCAの秘密鍵生成
@@ -58,12 +63,7 @@ cat > v3.ext <<EOF
 authorityKeyIdentifier=keyid,issuer
 basicConstraints=CA:FALSE
 keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
-subjectAltName = @alt_names
-
-[ alt_names ]
-DNS.1 = localhost.$DOMAIN
-DNS.2 = $DOMAIN
-DNS.3 = www.$DOMAIN
+subjectAltName = ${ALT_NAMES}
 EOF
 
 # サーバー証明書の生成（ルートCAによる署名）、SANを含む

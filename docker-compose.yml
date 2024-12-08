@@ -6,9 +6,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        - "SERVER_HOST=example.co.jp"
-    tty: true
-    stdin_open: true
+    environment:
+      - TZ=Asia/Tokyo
     volumes:
       - ./openssl:/opt/openssl
+      - ./entrypoint.sh:/entrypoint.sh
+    command: /bin/bash -c "chmod +x /entrypoint.sh && /entrypoint.sh"
