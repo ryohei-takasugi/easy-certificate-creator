@@ -10,5 +10,5 @@ services:
       - TZ=Asia/Tokyo
     volumes:
       - ./openssl:/opt/openssl
-      - ./entrypoint.sh:/entrypoint.sh
-    command: /bin/bash -c "chmod +x /entrypoint.sh && /entrypoint.sh"
+      - ./entrypoint:/opt/entrypoint
+    command: /bin/bash -c "chmod +x /opt/entrypoint/entrypoint.sh && /opt/entrypoint/entrypoint.sh"
